@@ -11,8 +11,8 @@ public class Data {
 
     public void createNewPass(String data) throws IOException {
         try{
-            FileWriter writer = new FileWriter(pathToFile);
-            writer.write(data);
+            FileWriter writer = new FileWriter(pathToFile, true);
+            writer.write(data + "\n");
             writer.close();
         }
         catch (IOException e){
