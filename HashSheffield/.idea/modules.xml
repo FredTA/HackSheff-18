@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/Documents/HackSheff-18/HashSheffield/HashSheffield.iml" filepath="$USER_HOME$/Documents/HackSheff-18/HashSheffield/HashSheffield.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HashSheffield.iml" filepath="$PROJECT_DIR$/HashSheffield.iml" />
     </modules>
   </component>
 </project>
