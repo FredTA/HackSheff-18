@@ -2,12 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 
 public class GUI extends JFrame implements ActionListener {
+
+    private Data datahandler;
 
     private Container contentPane;
 
@@ -22,6 +25,8 @@ public class GUI extends JFrame implements ActionListener {
 
     public GUI()  {
         super("HashSheffield");
+
+        datahandler = new Data();
 
         contentPane = getContentPane();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,8 +98,7 @@ public class GUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String serviceName = serviceNameEntry.getText();
         String plainPassword = serviceNameEntry.getText();
-        String unixTimestamp = Long.toString(Instant.now().getEpochSecond());
-
+        String unixTime = Long.toString(Instant.now().getEpochSecond());
 
         MessageDigest digest = null;
         try {
@@ -104,9 +108,17 @@ public class GUI extends JFrame implements ActionListener {
         }
         byte[] hash = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
 
-        String[] dataEntry = new String[] {serviceName, hash.toString(), unixTimestamp};
+        //String[] dataEntry = new String[] {serviceName,  unixTime, hash.toString(),};
 
-        System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
+        String dataEntry =  serviceName + "; " + unixTime + ";" + hash.toString();
+
+        try {
+            datahandler.createNewPass(dataEntry);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        //System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
     }
 }
 
