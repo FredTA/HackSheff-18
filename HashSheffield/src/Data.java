@@ -37,13 +37,11 @@ public class Data {
     public String[][] convertList(ArrayList<String> inputList){
         String [][] outputList = new String[inputList.size()][3];
         for (int i=0; i<inputList.size(); i++){
-            for (int j=0; j<3; j++){
-                int locationOfColon = inputList.get(i).indexOf(";");
-                outputList[i][0] = inputList.get(i).substring(0, locationOfColon - 1);
-                int locationOfColon2 = inputList.get(i).substring(locationOfColon).indexOf(";");
-                outputList[i][1] = inputList.get(i).substring(locationOfColon + 1, locationOfColon2 - 1);
-                outputList[i][2] = inputList.get(i).substring(locationOfColon2 + 1);
-            }
+            int locationOfColon = inputList.get(i).indexOf(";");
+            outputList[i][0] = inputList.get(i).substring(0, locationOfColon - 1);
+            int locationOfColon2 = inputList.get(i).substring(locationOfColon).indexOf(";");
+            outputList[i][1] = inputList.get(i).substring(locationOfColon + 1, locationOfColon2 - 1);
+            outputList[i][2] = inputList.get(i).substring(locationOfColon2 + 1);
         }
         return outputList;
     }
