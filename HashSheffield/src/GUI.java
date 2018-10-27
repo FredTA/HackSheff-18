@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,8 +24,8 @@ public class GUI extends JFrame implements ActionListener {
 
     //The size of screen of the device the program is running on
     private Dimension screenSize;
-    private JTextField serviceNameField = new JTextField(20);
-    private JTextField passwordField = new JTextField(20);
+    //private JTextField serviceNameField = new JTextField(20);
+    //private JTextField passwordField = new JTextField(20);
 
     private JTextField serviceNameEntry = new JTextField(20);
     private JPasswordField passwordEntry = new JPasswordField(20);
@@ -111,6 +112,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         serviceCompromisedPanel.add(compromisedServiceCombo);
         serviceCompromisedPanel.add(compromisedTimeField);
+        serviceSubmitButton.addActionListener(this);
         serviceCompromisedPanel.add(serviceSubmitButton);
         mainPanel.add(serviceCompromisedPanel);
 
@@ -154,20 +156,41 @@ public class GUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == submitButton) {
             String serviceName = serviceNameEntry.getText();
-            String plainPassword = serviceNameEntry.getText();
+            String plainPassword = passwordEntry.getText();
             String unixTime = Long.toString(Instant.now().getEpochSecond());
+            String hashText = "";
 
-            MessageDigest digest = null;
             try {
-                digest = MessageDigest.getInstance("SHA-256");
-            } catch (NoSuchAlgorithmException e1) {
-                e1.printStackTrace();
-            }
-            byte[] hash = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
+                // Static getInstance method is called with hashing SHA
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
 
+                // digest() method called
+                // to calculate message digest of an input
+                // and return array of byte
+                byte[] messageDigest = md.digest(plainPassword.getBytes());
+
+                // Convert byte array into signum representation
+                BigInteger no = new BigInteger(1, messageDigest);
+
+                // Convert message digest into hex value
+                hashText = no.toString(16);
+
+                while (hashText.length() < 32) {
+                    hashText = "0" + hashText;
+                }
+
+            }
+
+            // For specifying wrong message digest algorithms
+            catch (NoSuchAlgorithmException e1) {
+                System.out.println("Exception thrown"
+                        + " for incorrect algorithm: " + e1);
+
+            }
+            System.out.println("OI!!! " + hashText);
             //String[] dataEntry = new String[] {serviceName,  unixTime, hash.toString(),};
 
-            String dataEntry =  serviceName + ";" + unixTime + ";" + hash.toString();
+            String dataEntry =  serviceName + ";" + unixTime + ";" + hashText;
 
             try {
                 datahandler.createNewPass(dataEntry);
@@ -179,8 +202,13 @@ public class GUI extends JFrame implements ActionListener {
             String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
             for (int entry = 0; entry < dataArray.length; entry++) {
                 //Check if the service string in the entry = the one entered by the user
-                if ((dataArray[entry][0] == compromisedService)) {
-                    System.out.println("");
+                if ((dataArray[entry][0] == compromisedService))
+                {
+                    ArrayList<String> matchingServiceList = getServicesWithHash(dataArray[entry][2]);
+                    System.out.println("Accounts that are at risk: " );
+                    for (int i = 0; i < matchingServiceList.size(); i++) {
+                        System.out.println(matchingServiceList.get(i));
+                    }
                     break;
                 }
             }
