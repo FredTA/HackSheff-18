@@ -12,7 +12,7 @@ public class Data {
     public void createNewPass(String data) throws IOException {
         try{
             FileWriter writer = new FileWriter(pathToFile, true);
-            writer.write(data + "\n");
+            writer.write("\n" + data); //Will break if this is the first entry
             writer.close();
         }
         catch (IOException e){
