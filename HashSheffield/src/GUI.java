@@ -31,6 +31,8 @@ public class GUI extends JFrame implements ActionListener {
     private JTextField compromisedServiceField;
     private JButton serviceSubmitButton;
 
+    private ArrayList<JPanel> panelsList;
+
     public GUI() throws FileNotFoundException {
         super("HashSheffield");
 
@@ -42,7 +44,6 @@ public class GUI extends JFrame implements ActionListener {
                  System.out.print(dataArray[x][y]);
              }
              System.out.println("");
-
          }
 
         contentPane = getContentPane();
@@ -113,6 +114,21 @@ public class GUI extends JFrame implements ActionListener {
         serviceCompromisedPanel.add(serviceSubmitButton);
 
         mainPanel.add(serviceCompromisedPanel);
+
+        for (int entry = 0; entry < dataArray.length; entry++) {
+            //Check if the service string in the entry = the one entered by the user
+            JPanel servicePanel = new JPanel(new FlowLayout());
+            TextField serviceField = new TextField();
+            JPasswordField passwordUpdate = new JPasswordField(20);
+            JButton updateButton = new JButton("Update");
+
+            servicePanel.add(serviceField);
+            servicePanel.add(passwordUpdate);
+            servicePanel.add(updateButton);
+
+            panelsList.add(servicePanel);
+        }
+
 
 
         JPanel compromisedServicePanel = new JPanel();
