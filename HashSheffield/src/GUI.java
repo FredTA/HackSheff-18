@@ -39,9 +39,10 @@ public class GUI extends JFrame implements ActionListener {
         datahandler = new Data();
         dataArray = datahandler.readData();
 
+        //Print out data array to the console
          for (int x = 0; x < dataArray.length; x ++) {
              for (int y = 0; y < 3; y++) {
-                 System.out.print(dataArray[x][y]);
+                 System.out.print(dataArray[x][y] + " ");
              }
              System.out.println("");
          }
@@ -67,7 +68,7 @@ public class GUI extends JFrame implements ActionListener {
         setupMenu();
         setupListScreen();
 
-        contentPane.setBackground(Color.orange);
+        //contentPane.setBackground(Color.orange);
         //Refreshes the graphical display
         revalidate();
     }
@@ -109,12 +110,16 @@ public class GUI extends JFrame implements ActionListener {
         mainPanel.add(entryPanel);
 
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
+        compromisedServiceField = new JTextField();
         compromisedServiceField.setText("Compromised service");
         serviceCompromisedPanel.add(compromisedServiceField);
+        serviceSubmitButton = new JButton("update");
         serviceCompromisedPanel.add(serviceSubmitButton);
 
         mainPanel.add(serviceCompromisedPanel);
 
+
+        panelsList = new ArrayList<JPanel>();
         for (int entry = 0; entry < dataArray.length; entry++) {
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
@@ -127,10 +132,11 @@ public class GUI extends JFrame implements ActionListener {
             servicePanel.add(updateButton);
 
             panelsList.add(servicePanel);
+            mainPanel.add(servicePanel);
         }
 
 
-
+        contentPane.add(mainPanel);
         JPanel compromisedServicePanel = new JPanel();
 
     }
