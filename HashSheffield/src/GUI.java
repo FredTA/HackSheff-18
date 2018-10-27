@@ -1,3 +1,5 @@
+import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -112,7 +114,9 @@ public class GUI extends JFrame implements ActionListener {
         serviceCompromisedPanel.add(serviceSubmitButton);
         mainPanel.add(serviceCompromisedPanel);
 
+        JPanel servicesPanel = new JPanel();
         panelsList = new ArrayList<JPanel>();
+        servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         for (int entry = 0; entry < dataArray.length; entry++) {
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
@@ -126,9 +130,11 @@ public class GUI extends JFrame implements ActionListener {
             servicePanel.add(updateButton);
 
             panelsList.add(servicePanel);
-            mainPanel.add(servicePanel);
+            servicesPanel.add(servicePanel);
         }
-
+        JScrollPane servicesScrollPane = new JScrollPane(servicesPanel);
+        //servicesScrollPane.getVerticalScrollBar().setSize(50,50);
+        mainPanel.add(servicesScrollPane);
 
         contentPane.add(mainPanel);
         JPanel compromisedServicePanel = new JPanel();
