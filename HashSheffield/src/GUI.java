@@ -24,15 +24,15 @@ public class GUI extends JFrame implements ActionListener {
     private JTextField serviceNameField = new JTextField(20);
     private JTextField passwordField = new JTextField(20);
 
-    private JTextField serviceNameEntry;
-    private JPasswordField passwordEntry;
-    private JButton submitButton;
+    private JTextField serviceNameEntry = new JTextField(20);
+    private JPasswordField passwordEntry = new JPasswordField(20);
+    private JButton submitButton = new JButton("Add");
 
-    private JTextField compromisedServiceField;
-    private JButton serviceSubmitButton;
+    private JComboBox compromisedServiceCombo = new JComboBox();
+    private JTextField compromisedTimeField = new JTextField(20);
+    private JButton serviceSubmitButton = new JButton("Check");
 
     private ArrayList<JPanel> panelsList;
-
     public GUI() throws FileNotFoundException {
         super("HashSheffield");
 
@@ -90,40 +90,34 @@ public class GUI extends JFrame implements ActionListener {
 
     private void setupListScreen() {
         JPanel mainPanel = new JPanel();
-
-        //mainPanel.setBounds(61, 11, 81, 140);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
+        //Panel for a new service entry
         JPanel entryPanel = new JPanel(new FlowLayout());
-
-        serviceNameEntry = new JTextField(20);
         serviceNameEntry.setText("Service Name");
-        passwordEntry = new JPasswordField(20);
-
         entryPanel.add(serviceNameEntry);
         entryPanel.add(passwordEntry);
-
-        submitButton = new JButton("Add");
         submitButton.addActionListener(this);
         entryPanel.add(submitButton);
-
         mainPanel.add(entryPanel);
 
+        //Panel for entering a compromised service
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
-        compromisedServiceField = new JTextField();
-        compromisedServiceField.setText("Compromised service");
-        serviceCompromisedPanel.add(compromisedServiceField);
-        serviceSubmitButton = new JButton("update");
+        //Add all services
+        for (int entry = 0; entry < dataArray.length; entry++) {
+            compromisedServiceCombo.addItem(dataArray[entry][0]);
+        }
+        serviceCompromisedPanel.add(compromisedServiceCombo);
+        serviceCompromisedPanel.add(compromisedTimeField);
         serviceCompromisedPanel.add(serviceSubmitButton);
-
         mainPanel.add(serviceCompromisedPanel);
-
 
         panelsList = new ArrayList<JPanel>();
         for (int entry = 0; entry < dataArray.length; entry++) {
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
             TextField serviceField = new TextField();
+            serviceField.setText(dataArray[entry][0]);
             JPasswordField passwordUpdate = new JPasswordField(20);
             JButton updateButton = new JButton("Update");
 
@@ -176,7 +170,7 @@ public class GUI extends JFrame implements ActionListener {
             }
         }
         else if (e.getSource() == serviceSubmitButton) {
-            String compromisedService = compromisedServiceField.getText();
+            String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
             for (int entry = 0; entry < dataArray.length; entry++) {
                 //Check if the service string in the entry = the one entered by the user
                 if ((dataArray[entry][0] == compromisedService)) {

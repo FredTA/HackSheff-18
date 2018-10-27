@@ -35,12 +35,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="3651" />
+          <entry key="java" value="4024" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="3651" />
+          <entry key="JAVA" value="4024" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -63,10 +63,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="138" column="35" selection-start-line="138" selection-start-column="35" selection-end-line="138" selection-end-column="35" />
+            <state relative-caret-position="85">
+              <caret line="173" column="68" lean-forward="true" selection-start-line="173" selection-start-column="68" selection-end-line="173" selection-end-column="68" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#GUI#0;class#GUI#0" />
                 <element signature="method#setupMenu#0;class#GUI#0" />
                 <element signature="method#resizeWindow#0;class#GUI#0" />
               </folding>
@@ -208,7 +209,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16961000" />
+    <option name="totallyTimeSpent" value="19002000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -223,8 +224,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.29929078" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.29929078" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -277,10 +278,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/GUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="138" column="35" selection-start-line="138" selection-start-column="35" selection-end-line="138" selection-end-column="35" />
+        <state relative-caret-position="85">
+          <caret line="173" column="68" lean-forward="true" selection-start-line="173" selection-start-column="68" selection-end-line="173" selection-end-column="68" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#GUI#0;class#GUI#0" />
             <element signature="method#setupMenu#0;class#GUI#0" />
             <element signature="method#resizeWindow#0;class#GUI#0" />
           </folding>
