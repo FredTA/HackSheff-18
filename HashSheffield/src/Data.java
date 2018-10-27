@@ -19,18 +19,18 @@ public class Data {
             e.printStackTrace();
         }
     }
-    public ArrayList<String> readData() throws FileNotFoundException {
+    public String[][] readData() throws FileNotFoundException {
         ArrayList<String> list = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(pathToFile);
             while (scanner.hasNextLine()) {
                 list.add(scanner.next());
             }
-            return list;
+            return convertList(list);
         }
         catch (FileNotFoundException e){
             e.printStackTrace();
-            return list;
+            return convertList(list);
         }
     }
 

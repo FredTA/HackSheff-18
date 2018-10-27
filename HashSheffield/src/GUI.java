@@ -2,13 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
 
 public class GUI extends JFrame implements ActionListener {
+
+    String[][] dataArray;
 
     private Data datahandler;
 
@@ -20,13 +25,25 @@ public class GUI extends JFrame implements ActionListener {
     private JTextField passwordField = new JTextField(20);
 
     private JTextField serviceNameEntry;
-    JPasswordField passwordEntry;
+    private JPasswordField passwordEntry;
     private JButton submitButton;
 
-    public GUI()  {
+    private JTextField compromisedServiceField;
+    private JButton serviceSubmitButton;
+
+    public GUI() throws FileNotFoundException {
         super("HashSheffield");
 
         datahandler = new Data();
+        dataArray = datahandler.readData();
+
+         for (int x = 0; x < dataArray.length; x ++) {
+             for (int y = 0; y < 3; y++) {
+                 System.out.print(dataArray[x][y]);
+             }
+             System.out.println("");
+
+         }
 
         contentPane = getContentPane();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,7 +69,6 @@ public class GUI extends JFrame implements ActionListener {
         contentPane.setBackground(Color.orange);
         //Refreshes the graphical display
         revalidate();
-
     }
 
     private void setupMenu() {
@@ -63,12 +79,19 @@ public class GUI extends JFrame implements ActionListener {
         menuBar.add(menu);
 
         JMenuItem styleMenu = new JMenuItem("Style");
+        JMenuItem prefMenu = new JMenuItem("Preferences");
         JMenuItem dataMenu = new JMenuItem("Clear Data");
         menu.add(styleMenu);
+        menu.add(prefMenu);
         menu.add(dataMenu);
     }
 
     private void setupListScreen() {
+        JPanel mainPanel = new JPanel();
+
+        //mainPanel.setBounds(61, 11, 81, 140);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
         JPanel entryPanel = new JPanel(new FlowLayout());
 
         serviceNameEntry = new JTextField(20);
@@ -82,7 +105,18 @@ public class GUI extends JFrame implements ActionListener {
         submitButton.addActionListener(this);
         entryPanel.add(submitButton);
 
-        contentPane.add(entryPanel);
+        mainPanel.add(entryPanel);
+
+        JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
+        compromisedServiceField.setText("Compromised service");
+        serviceCompromisedPanel.add(compromisedServiceField);
+        serviceCompromisedPanel.add(serviceSubmitButton);
+
+        mainPanel.add(serviceCompromisedPanel);
+
+
+        JPanel compromisedServicePanel = new JPanel();
+
     }
 
     //Resizes the window according to screen size and centres the window
@@ -96,29 +130,59 @@ public class GUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String serviceName = serviceNameEntry.getText();
-        String plainPassword = serviceNameEntry.getText();
-        String unixTime = Long.toString(Instant.now().getEpochSecond());
+        if (e.getSource() == submitButton) {
+            String serviceName = serviceNameEntry.getText();
+            String plainPassword = serviceNameEntry.getText();
+            String unixTime = Long.toString(Instant.now().getEpochSecond());
 
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e1) {
-            e1.printStackTrace();
+            MessageDigest digest = null;
+            try {
+                digest = MessageDigest.getInstance("SHA-256");
+            } catch (NoSuchAlgorithmException e1) {
+                e1.printStackTrace();
+            }
+            byte[] hash = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
+
+            //String[] dataEntry = new String[] {serviceName,  unixTime, hash.toString(),};
+
+            String dataEntry =  serviceName + ";" + unixTime + ";" + hash.toString();
+
+            try {
+                datahandler.createNewPass(dataEntry);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
-        byte[] hash = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
-
-        //String[] dataEntry = new String[] {serviceName,  unixTime, hash.toString(),};
-
-        String dataEntry =  serviceName + "; " + unixTime + ";" + hash.toString();
-
-        try {
-            datahandler.createNewPass(dataEntry);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        else if (e.getSource() == serviceSubmitButton) {
+            String compromisedService = compromisedServiceField.getText();
+            for (int entry = 0; entry < dataArray.length; entry++) {
+                //Check if the service string in the entry = the one entered by the user
+                if ((dataArray[entry][0] == compromisedService)) {
+                    System.out.println("");
+                    break;
+                }
+            }
         }
+        else {
+            System.out.println("nahmate" + e.getSource());
+        }
+
 
         //System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
+    }
+
+    private ArrayList<String> getServicesWithHash (String hash) {
+        ArrayList<String> services = new ArrayList<>();
+
+        for (int entry = 0; entry < dataArray.length; entry++) {
+            //Check if the hash in the entry = the hash parsed
+            if (dataArray[entry][2] == hash) {
+                //Add to the arraylist the service name
+                services.add(dataArray[entry][0]);
+            }
+        }
+
+        return services;
     }
 }
 
