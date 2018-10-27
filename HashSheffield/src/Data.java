@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -37,11 +38,31 @@ public class Data {
     public String[][] convertList(ArrayList<String> inputList){
         String [][] outputList = new String[inputList.size()][3];
         for (int i=0; i<inputList.size(); i++){
-            int locationOfColon = inputList.get(i).indexOf(";");
-            outputList[i][0] = inputList.get(i).substring(0, locationOfColon - 1);
-            int locationOfColon2 = inputList.get(i).substring(locationOfColon).indexOf(";");
-            outputList[i][1] = inputList.get(i).substring(locationOfColon + 1, locationOfColon2 - 1);
-            outputList[i][2] = inputList.get(i).substring(locationOfColon2 + 1);
+            boolean flag1 = false;
+            boolean flag2 = false;
+            StringBuilder string1 = new StringBuilder();
+            StringBuilder string2 = new StringBuilder();
+            for (int j = 0; j < inputList.get(i).length(); j++) {
+                if (!flag1){
+                    if (Objects.equals(inputList.get(i).substring(j, j + 1), ";")){
+                        flag1 = true;
+                        outputList[i][0] = string1.toString();
+                    }
+                    else {
+                        string1.append(inputList.get(i).substring(j, j + 1));
+                    }
+                }
+                else if (!flag2){
+                    if (Objects.equals(inputList.get(i).substring(j, j + 1), ";")){
+                        outputList[i][1] = string2.toString();
+                        outputList[i][2] = inputList.get(i).substring(j+1);
+                        break;
+                    }
+                    else {
+                        string2.append(inputList.get(i).substring(j, j + 1));
+                    }
+                }
+            }
         }
         return outputList;
     }
