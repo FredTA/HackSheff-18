@@ -200,10 +200,13 @@ public class GUI extends JFrame implements ActionListener {
         }
         else if (e.getSource() == serviceSubmitButton) {
             String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
+            System.out.println();
+            System.out.println("Looking for hashes matching that of " + compromisedService);
             for (int entry = 0; entry < dataArray.length; entry++) {
                 //Check if the service string in the entry = the one entered by the user
                 if ((dataArray[entry][0] == compromisedService))
                 {
+                    System.out.println("Hash value: " + dataArray[entry][2]);
                     ArrayList<String> matchingServiceList = getServicesWithHash(dataArray[entry][2]);
                     System.out.println("Accounts that are at risk: " );
                     for (int i = 0; i < matchingServiceList.size(); i++) {
@@ -225,9 +228,11 @@ public class GUI extends JFrame implements ActionListener {
         ArrayList<String> services = new ArrayList<>();
 
         for (int entry = 0; entry < dataArray.length; entry++) {
+            System.out.println(entry + ": " + dataArray[entry][2]);
             //Check if the hash in the entry = the hash parsed
-            if (dataArray[entry][2] == hash) {
+            if (dataArray[entry][2].equals(hash)) {
                 //Add to the arraylist the service name
+                System.out.println(dataArray[entry][0] + " matches!");
                 services.add(dataArray[entry][0]);
             }
         }
