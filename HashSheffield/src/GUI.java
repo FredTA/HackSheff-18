@@ -210,6 +210,9 @@ public class GUI extends JFrame implements ActionListener {
                 panelsList.add(servicePanel);
                 servicesPanel.add(servicePanel);
 
+                //Refresh the combo box
+                compromisedServiceCombo.addItem(serviceName);
+
                 //contentPane.removeAll();
                 //setupListScreen();
                 revalidate();
