@@ -35,7 +35,9 @@ public class GUI extends JFrame implements ActionListener {
     private JTextField compromisedTimeField = new JTextField(20);
     private JButton serviceSubmitButton = new JButton("Check");
 
-    private ArrayList<JPanel> panelsList;
+    private JPanel servicesPanel = new JPanel();
+    private ArrayList<JPanel> panelsList = new ArrayList<JPanel>();
+
     public GUI() throws FileNotFoundException {
         super("HashSheffield");
 
@@ -116,8 +118,6 @@ public class GUI extends JFrame implements ActionListener {
         serviceCompromisedPanel.add(serviceSubmitButton);
         mainPanel.add(serviceCompromisedPanel);
 
-        JPanel servicesPanel = new JPanel();
-        panelsList = new ArrayList<JPanel>();
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         for (int entry = 0; entry < dataArray.length; entry++) {
             //Check if the service string in the entry = the one entered by the user
@@ -158,6 +158,7 @@ public class GUI extends JFrame implements ActionListener {
             String serviceName = serviceNameEntry.getText();
             String plainPassword = passwordEntry.getText();
             String unixTime = Long.toString(Instant.now().getEpochSecond());
+            System.out.println("Woweee you just entered a new service, " + serviceName + " conFUCKINGgratis");
             String hashText = "";
 
             try {
@@ -187,13 +188,31 @@ public class GUI extends JFrame implements ActionListener {
                         + " for incorrect algorithm: " + e1);
 
             }
-            System.out.println("OI!!! " + hashText);
-            //String[] dataEntry = new String[] {serviceName,  unixTime, hash.toString(),};
 
             String dataEntry =  serviceName + ";" + unixTime + ";" + hashText;
 
             try {
+                //Refresh the data array as we have now edited the storage file
                 datahandler.createNewPass(dataEntry);
+                dataArray = datahandler.readData();
+
+                //Add the new service to the list on the UI
+                JPanel servicePanel = new JPanel(new FlowLayout());
+                TextField serviceField = new TextField();
+                serviceField.setText(serviceName);
+                JPasswordField passwordUpdate = new JPasswordField(20);
+                JButton updateButton = new JButton("Update");
+
+                servicePanel.add(serviceField);
+                servicePanel.add(passwordUpdate);
+                servicePanel.add(updateButton);
+
+                panelsList.add(servicePanel);
+                servicesPanel.add(servicePanel);
+
+                //contentPane.removeAll();
+                //setupListScreen();
+                revalidate();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
