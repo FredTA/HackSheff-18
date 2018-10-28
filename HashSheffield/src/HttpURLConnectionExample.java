@@ -36,7 +36,8 @@ public class HttpURLConnectionExample {
 		in.close();
 		
 
+		//Jesus Cian this line is so fecking long, pls remove!!!!!!!!!!!1111!!11!!1
 		//print result
-		System.out.println(response.toString());
+		//System.out.println(response.toString());
 	}}
 

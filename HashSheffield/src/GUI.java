@@ -229,11 +229,16 @@ public class GUI extends JFrame implements ActionListener {
                 if ((dataArray[entry][0] == compromisedService))
                 {
                     System.out.println("Hash value: " + dataArray[entry][2]);
-                    ArrayList<String> matchingServiceList = getServicesWithHash(dataArray[entry][2]);
+                    //Sry for the leng line :'( cba to fix
+                    int timeOfBreach = Integer.parseInt(compromisedTimeField.getText());
+                    ArrayList<String> matchingServiceList = getServicesWithHashAfterTime(dataArray[entry][2],timeOfBreach);
                     System.out.println("Accounts that are at risk: " );
+                    String message = ("You should change your password for the following services\n");
                     for (int i = 0; i < matchingServiceList.size(); i++) {
                         System.out.println(matchingServiceList.get(i));
+                        message += matchingServiceList.get(i) + "\n";
                     }
+                    JOptionPane.showMessageDialog(null, message);
                     break;
                 }
             }
@@ -246,13 +251,13 @@ public class GUI extends JFrame implements ActionListener {
         //System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
     }
 
-    private ArrayList<String> getServicesWithHash (String hash) {
+    private ArrayList<String> getServicesWithHashAfterTime (String hash, int time) {
         ArrayList<String> services = new ArrayList<>();
 
         for (int entry = 0; entry < dataArray.length; entry++) {
             System.out.println(entry + ": " + dataArray[entry][2]);
-            //Check if the hash in the entry = the hash parsed
-            if (dataArray[entry][2].equals(hash)) {
+            //Check if the hash in the entry = the hash parsed and the time passed in is greater than the time updated
+            if (dataArray[entry][2].equals(hash) && Integer.parseInt(dataArray[entry][1]) < time) {
                 //Add to the arraylist the service name
                 System.out.println(dataArray[entry][0] + " matches!");
                 services.add(dataArray[entry][0]);
