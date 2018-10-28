@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 
 public class GUI extends JFrame implements ActionListener {
+    private int PASSWORD_COLUMNS = 10;
 
     String[][] dataArray;
 
@@ -24,13 +25,13 @@ public class GUI extends JFrame implements ActionListener {
     //private JTextField serviceNameField = new JTextField(20);
     //private JTextField passwordField = new JTextField(20);
 
-    private JTextField serviceNameEntry = new JTextField(20);
-    private JPasswordField passwordEntry = new JPasswordField(20);
+    private JTextField serviceNameEntry = new JTextField(10);
+    private JPasswordField passwordEntry = new JPasswordField(PASSWORD_COLUMNS);
     private JButton submitButton = new JButton("Add");
     private JLabel serviceEnteredLabel = new JLabel();
 
     private JComboBox<String> compromisedServiceCombo = new JComboBox<String>();
-    private JTextField compromisedTimeField = new JTextField(20);
+    private JTextField compromisedTimeField = new JTextField(PASSWORD_COLUMNS);
     private JButton serviceSubmitButton = new JButton("Check");
 
     private JPanel servicesPanel = new JPanel();
@@ -133,8 +134,11 @@ public class GUI extends JFrame implements ActionListener {
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
             TextField serviceField = new TextField();
+            serviceField.setPreferredSize(new Dimension(120, 20));
             serviceField.setText(aDataArray[0]);
-            JPasswordField passwordUpdate = new JPasswordField(20);
+
+            JPasswordField passwordUpdate = new JPasswordField(PASSWORD_COLUMNS);
+            passwordUpdate.setPreferredSize(new Dimension(60, 20));
             JButton updateButton = new JButton("Update");
             updateButton.addActionListener(this);
             JLabel serviceUpdateLabel = new JLabel();
@@ -185,7 +189,7 @@ public class GUI extends JFrame implements ActionListener {
                 JPanel servicePanel = new JPanel(new FlowLayout());
                 TextField serviceField = new TextField();
                 serviceField.setText(serviceName);
-                JPasswordField passwordUpdate = new JPasswordField(20);
+                JPasswordField passwordUpdate = new JPasswordField(PASSWORD_COLUMNS);
                 JButton updateButton = new JButton("Update");
 
                 servicePanel.add(serviceField);
