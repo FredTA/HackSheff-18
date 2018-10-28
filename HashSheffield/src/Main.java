@@ -7,8 +7,10 @@ public class Main {
         GUI display = new GUI();
 		
 		HttpURLConnectionExample http = new HttpURLConnectionExample();
-
 		System.out.println("Testing 1 - Send Http GET request");
-		http.sendGet();
+		http.printStr(http.sendGet());
+
+		
+		
     }
 }
