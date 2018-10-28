@@ -123,6 +123,7 @@ public class GUI extends JFrame implements ActionListener {
             serviceField.setText(aDataArray[0]);
             JPasswordField passwordUpdate = new JPasswordField(20);
             JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(this);
 
             servicePanel.add(serviceField);
             servicePanel.add(passwordUpdate);
@@ -156,37 +157,8 @@ public class GUI extends JFrame implements ActionListener {
             String plainPassword = passwordEntry.getText();
             String unixTime = Long.toString(Instant.now().getEpochSecond());
             System.out.println("Woweee you just entered a new service, " + serviceName + " conFUCKINGgratis");
-            String hashText = "";
 
-            try {
-                // Static getInstance method is called with hashing SHA
-                MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-                // digest() method called
-                // to calculate message digest of an input
-                // and return array of byte
-                byte[] messageDigest = md.digest(plainPassword.getBytes());
-
-                // Convert byte array into signum representation
-                BigInteger no = new BigInteger(1, messageDigest);
-
-                // Convert message digest into hex value
-                hashText = no.toString(16);
-
-                while (hashText.length() < 32) {
-                    hashText = "0" + hashText;
-                }
-
-            }
-
-            // For specifying wrong message digest algorithms
-            catch (NoSuchAlgorithmException e1) {
-                System.out.println("Exception thrown"
-                        + " for incorrect algorithm: " + e1);
-
-            }
-
-            String dataEntry =  serviceName + ";" + unixTime + ";" + hashText;
+            String dataEntry =  serviceName + ";" + unixTime + ";" + hashMyString(plainPassword);
 
             try {
                 //Refresh the data array as we have now edited the storage file
@@ -240,11 +212,55 @@ public class GUI extends JFrame implements ActionListener {
             }
         }
         else {
+            //For all buttons in the list of services
+            for (int i = 0; i < panelsList.size(); i++) {
+                if (e.getSource() == panelsList.get(i).getComponent(2)) {
+                    //Get the password field of the appropriate element in the list
+                    JTextField passwordField = (JTextField)panelsList.get(i).getComponent(1);
+                    dataArray[i][2] = hashMyString(passwordField.getText());
+                    datahandler.updateFile(dataArray);
+                    break;
+                }
+
+            }
             System.out.println("nahmate" + e.getSource());
         }
 
 
         //System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
+    }
+
+    private String hashMyString(String stringToHash) {
+        String hashText = "";
+
+        try {
+            // Static getInstance method is called with hashing SHA
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            // digest() method called
+            // to calculate message digest of an input
+            // and return array of byte
+            byte[] messageDigest = md.digest(stringToHash.getBytes());
+
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            // Convert message digest into hex value
+            hashText = no.toString(16);
+
+            while (hashText.length() < 32) {
+                hashText = "0" + hashText;
+            }
+
+        }
+
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e1) {
+            System.out.println("Exception thrown"
+                    + " for incorrect algorithm: " + e1);
+
+        }
+        return hashText;
     }
 
     private ArrayList<String> getServicesWithHashAfterTime (String hash, int time) {

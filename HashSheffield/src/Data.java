@@ -19,6 +19,20 @@ public class Data {
             e.printStackTrace();
         }
     }
+    //Takes data array and completely rewrites file with this array
+    public void updateFile(String[][] dataArray) {
+        try{
+            FileWriter writer = new FileWriter(pathToFile, false);
+            writer.write(dataArray[0][0] + ";" + dataArray[0][1] + ";" + dataArray[0][2]);
+            for (int i = 1; i < dataArray.length ; i++) {
+                writer.write("\n" + dataArray[i][0] + ";" + dataArray[i][1] + ";" + dataArray[i][2]);
+            }
+            writer.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
     public String[][] readData() throws FileNotFoundException {
         ArrayList<String> list = new ArrayList<>();
         try {
