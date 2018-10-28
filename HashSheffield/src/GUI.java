@@ -225,8 +225,10 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
     public void actionPerformed(ActionEvent e) {
         System.out.println("Listener whoowhooowhooo");
         serviceEnteredLabel.setVisible(true);
+        //If the button for adding a new service was clicked
         if (e.getSource() == submitButton) {
             String serviceName = serviceNameEntry.getText();
+            //If the service isn't already present
             if (!isServicePresent(serviceName)) {
                 String plainPassword = passwordEntry.getText();
                 String unixTime = Long.toString(Instant.now().getEpochSecond());
@@ -279,8 +281,14 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                serviceNameEntry.setText("Service name");
-                passwordEntry.setText("");
+                serviceNameEntry.setPlaceholder("Service Name");
+                //serviceNameEntry.setPreferredSize(new Dimension(120, 32));
+                serviceNameEntry.setFont(systemFont);
+                passwordEntry.setFont(systemFont);
+                passwordEntry.addFocusListener(this);
+                passwordEntry.setPlaceholder(PASSWORD_PLACEHOLDER);
+                passwordEntry.setEchoChar((char) 0);
+
                 serviceEnteredLabel.setForeground(Color.GREEN);
                 serviceEnteredLabel.setText(serviceName + " entered!");
             }
