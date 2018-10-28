@@ -54,8 +54,8 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
 
         //Print out data array to the console
         for (String[] aDataArray : dataArray) {
-            for (int y = 0; y < 3; y++) {
-                System.out.print(aDataArray[y] + " ");
+            for (int y = 0; y < 4; y++) {
+                System.out.print(aDataArray[y] + "  ");
             }
             System.out.println("");
         }

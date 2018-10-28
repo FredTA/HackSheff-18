@@ -25,7 +25,7 @@ public class Data {
             FileWriter writer = new FileWriter(pathToFile, false);
             writer.write(dataArray[0][0] + ";" + dataArray[0][1] + ";" + dataArray[0][2]);
             for (int i = 1; i < dataArray.length ; i++) {
-                writer.write("\n" + dataArray[i][0] + ";" + dataArray[i][1] + ";" + dataArray[i][2]);
+                writer.write("\n" + dataArray[i][0] + ";" + dataArray[i][1] + ";" + dataArray[i][2] + ";" + dataArray[i][3]);
             }
             writer.close();
         }
@@ -50,10 +50,11 @@ public class Data {
     }
 
     public String[][] convertList(ArrayList<String> inputList){
-        String [][] outputList = new String[inputList.size()][3];
+        String [][] outputList = new String[inputList.size()][4];
 
         boolean colon1Found = false;
         boolean colon2Found = false;
+        boolean colon3Found = false;
         String subString = "";
 
         for (int i=0; i<inputList.size(); i++){
@@ -72,9 +73,14 @@ public class Data {
                     outputList[i][1] = subString;
                     subString = "";
                 }
+                else if (!colon3Found) {
+                    colon3Found = true;
+                    outputList[i][2] = subString;
+                    subString = "";
+                }
             }
-            colon1Found = colon2Found = false;
-            outputList[i][2] = subString;
+            colon1Found = colon2Found = colon3Found = false;
+            outputList[i][3] = subString;
             subString = "";
         }
  /*
