@@ -2,13 +2,15 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class HttpURLConnectionExample {
 
 	private final String USER_AGENT = "Mozilla/5.0";
 
 	// HTTP GET request
-	public void sendGet() throws Exception {
+	public StringBuffer sendGet() throws Exception {
 
 		String url = "https://haveibeenpwned.com/api/v2/breaches";
 		
@@ -33,10 +35,24 @@ public class HttpURLConnectionExample {
 		while ((inputLine = in.readLine()) != null) {
 			response.append(inputLine);
 		}
-		in.close();
+		return response;
 		
+	}
+		
+	void printStr(StringBuffer rsp) {
+		
+		String str = rsp.toString();
+		
+		String strNew1 = str.substring(1, str.length()-1);
+		JSONObject obj2 = new JSONObject(strNew1);
+		
+		String n = obj2.getString("Domain");
+		String a = obj2.getString("BreachDate");
+		
+		System.out.println(n + "/n " + a); 
 
-		//print result
-		System.out.println(response.toString());
+		strNew1 = strNew1.replaceFirst("Domain","");
+		
+		
 	}}
 
