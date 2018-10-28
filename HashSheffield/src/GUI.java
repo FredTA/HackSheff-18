@@ -1,4 +1,3 @@
-import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,9 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -31,7 +28,7 @@ public class GUI extends JFrame implements ActionListener {
     private JPasswordField passwordEntry = new JPasswordField(20);
     private JButton submitButton = new JButton("Add");
 
-    private JComboBox compromisedServiceCombo = new JComboBox();
+    private JComboBox<String> compromisedServiceCombo = new JComboBox<String>();
     private JTextField compromisedTimeField = new JTextField(20);
     private JButton serviceSubmitButton = new JButton("Check");
 
@@ -45,12 +42,12 @@ public class GUI extends JFrame implements ActionListener {
         dataArray = datahandler.readData();
 
         //Print out data array to the console
-         for (int x = 0; x < dataArray.length; x ++) {
-             for (int y = 0; y < 3; y++) {
-                 System.out.print(dataArray[x][y] + " ");
-             }
-             System.out.println("");
-         }
+        for (String[] aDataArray : dataArray) {
+            for (int y = 0; y < 3; y++) {
+                System.out.print(aDataArray[y] + " ");
+            }
+            System.out.println("");
+        }
 
         contentPane = getContentPane();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -109,8 +106,8 @@ public class GUI extends JFrame implements ActionListener {
         //Panel for entering a compromised service
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
         //Add all services
-        for (int entry = 0; entry < dataArray.length; entry++) {
-            compromisedServiceCombo.addItem(dataArray[entry][0]);
+        for (String[] aDataArray : dataArray) {
+            compromisedServiceCombo.addItem(aDataArray[0]);
         }
         serviceCompromisedPanel.add(compromisedServiceCombo);
         serviceCompromisedPanel.add(compromisedTimeField);
@@ -119,11 +116,11 @@ public class GUI extends JFrame implements ActionListener {
         mainPanel.add(serviceCompromisedPanel);
 
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
-        for (int entry = 0; entry < dataArray.length; entry++) {
+        for (String[] aDataArray : dataArray) {
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
             TextField serviceField = new TextField();
-            serviceField.setText(dataArray[entry][0]);
+            serviceField.setText(aDataArray[0]);
             JPasswordField passwordUpdate = new JPasswordField(20);
             JButton updateButton = new JButton("Update");
 
@@ -224,21 +221,20 @@ public class GUI extends JFrame implements ActionListener {
             String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
             System.out.println();
             System.out.println("Looking for hashes matching that of " + compromisedService);
-            for (int entry = 0; entry < dataArray.length; entry++) {
+            for (String[] aDataArray : dataArray) {
                 //Check if the service string in the entry = the one entered by the user
-                if ((dataArray[entry][0] == compromisedService))
-                {
-                    System.out.println("Hash value: " + dataArray[entry][2]);
+                if ((aDataArray[0] == compromisedService)) {
+                    System.out.println("Hash value: " + aDataArray[2]);
                     //Sry for the leng line :'( cba to fix
                     int timeOfBreach = Integer.parseInt(compromisedTimeField.getText());
-                    ArrayList<String> matchingServiceList = getServicesWithHashAfterTime(dataArray[entry][2],timeOfBreach);
-                    System.out.println("Accounts that are at risk: " );
-                    String message = ("You should change your password for the following services\n");
-                    for (int i = 0; i < matchingServiceList.size(); i++) {
-                        System.out.println(matchingServiceList.get(i));
-                        message += matchingServiceList.get(i) + "\n";
+                    ArrayList<String> matchingServiceList = getServicesWithHashAfterTime(aDataArray[2], timeOfBreach);
+                    System.out.println("Accounts that are at risk: ");
+                    StringBuilder message = new StringBuilder(("You should change your password for the following services\n"));
+                    for (String aMatchingServiceList : matchingServiceList) {
+                        System.out.println(aMatchingServiceList);
+                        message.append(aMatchingServiceList).append("\n");
                     }
-                    JOptionPane.showMessageDialog(null, message);
+                    JOptionPane.showMessageDialog(null, message.toString());
                     break;
                 }
             }
