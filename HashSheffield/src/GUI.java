@@ -73,7 +73,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         double windowSizeY = screenSize.height;
 
         //Setup the window with the appropriate size
-        resizeWindow(windowSizeX / 1.2, windowSizeY / 1.2);
+        resizeWindow(windowSizeX / 2.4, windowSizeY / 1.2);
 
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
@@ -108,7 +108,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         //Panel for a new service entry
         JLabel newServiceLabel = new JLabel();
         newServiceLabel.setFont(labelFont);
-        newServiceLabel.setText("                                                                                              Enter a new service");
+        newServiceLabel.setText("                        Enter a new service");
         mainPanel.add(newServiceLabel);
         JPanel entryPanel = new JPanel(new FlowLayout());
         serviceNameEntry.setPlaceholder("Service Name");
@@ -135,7 +135,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         JLabel compromisedServiceLabel = new JLabel();
         mainPanel.add(compromisedServiceLabel);
         compromisedServiceLabel.setFont(labelFont);
-        compromisedServiceLabel.setText("                                                                               Flag a service that has had a data breach");
+        compromisedServiceLabel.setText("    Flag a service that has had a data breach");
         //Add all services
         for (String[] aDataArray : dataArray) {
             compromisedServiceCombo.addItem(aDataArray[0]);
@@ -155,7 +155,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         JLabel existingServiceLabel = new JLabel();
         existingServiceLabel.setFont(labelFont);
-        existingServiceLabel.setText("                                                                                  Update passwords for your services");
+        existingServiceLabel.setText("          Update passwords for your services");
         mainPanel.add(existingServiceLabel);
         for (String[] aDataArray : dataArray) { //Thanks for the tidy up, @roberto
             //Check if the service string in the entry = the one entered by the user
@@ -166,6 +166,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
             serviceField.setEditable(false);
             serviceField.setText(aDataArray[0]);
 
+            //here
             CustomPasswordField passwordUpdate = new CustomPasswordField(PASSWORD_COLUMNS);
             passwordUpdate.addFocusListener(this);
             passwordUpdate.setPlaceholder(PASSWORD_PLACEHOLDER);
@@ -223,17 +224,32 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                 //Add the new service to the list on the UI
                 JPanel servicePanel = new JPanel(new FlowLayout());
                 TextField serviceField = new TextField();
+                serviceField.setPreferredSize(new Dimension(160, 32));
+                serviceField.setFont(systemFont);
+                serviceField.setEditable(false);
                 serviceField.setText(serviceName);
-                JPasswordField passwordUpdate = new JPasswordField(PASSWORD_COLUMNS);
+
+                //here
+                CustomPasswordField passwordUpdate = new CustomPasswordField(PASSWORD_COLUMNS);
+                passwordUpdate.addFocusListener(this);
+                passwordUpdate.setPlaceholder(PASSWORD_PLACEHOLDER);
+                passwordUpdate.setEchoChar((char) 0);
+                passwordUpdate.setPreferredSize(new Dimension(60, 32));
+                passwordUpdate.setFont(systemFont);
                 JButton updateButton = new JButton("Update");
+                updateButton.addActionListener(this);
+                updateButton.setFont(buttonFont);
+                JLabel serviceUpdateLabel = new JLabel();
+                serviceUpdateLabel.setVisible(false);
 
                 servicePanel.add(serviceField);
                 servicePanel.add(passwordUpdate);
                 servicePanel.add(updateButton);
+                servicePanel.add(serviceUpdateLabel);
 
                 panelsList.add(servicePanel);
                 servicesPanel.add(servicePanel);
-
+                    //here
                 //Refresh the combo box
                 compromisedServiceCombo.addItem(serviceName);
 
