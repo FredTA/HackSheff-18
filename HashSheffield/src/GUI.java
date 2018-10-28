@@ -1,8 +1,12 @@
 
+import com.sun.jna.platform.win32.WinDef;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -11,8 +15,9 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
 
-public class GUI extends JFrame implements ActionListener {
+public class GUI extends JFrame implements ActionListener, FocusListener {
     private int PASSWORD_COLUMNS = 10;
+    private String PASSWORD_PLACEHOLDER = "Password";
 
     String[][] dataArray;
 
@@ -25,20 +30,20 @@ public class GUI extends JFrame implements ActionListener {
     //private JTextField serviceNameField = new JTextField(20);
     //private JTextField passwordField = new JTextField(20);
 
-    private JTextField serviceNameEntry = new JTextField(8);
-    private JPasswordField passwordEntry = new JPasswordField(PASSWORD_COLUMNS);
+    private CustomTextField serviceNameEntry = new CustomTextField(8);
+    private CustomPasswordField passwordEntry = new CustomPasswordField(PASSWORD_COLUMNS);
     private JButton submitButton = new JButton("Add");
     private JLabel serviceEnteredLabel = new JLabel();
 
     private JComboBox<String> compromisedServiceCombo = new JComboBox<String>();
-    private JTextField compromisedTimeField = new JTextField(PASSWORD_COLUMNS);
+    private CustomTextField compromisedTimeField = new CustomTextField(11);
     private JButton serviceSubmitButton = new JButton("Check");
 
     private JPanel servicesPanel = new JPanel();
     private ArrayList<JPanel> panelsList = new ArrayList<JPanel>();
 
     Font systemFont = new Font("Serif", Font.BOLD, 24);
-    Font buttonFont = new Font("Serif", Font.BOLD, 16);
+    Font buttonFont = new Font("Serif", Font.BOLD, 18);
     Font labelFont = new Font("Serif", Font.CENTER_BASELINE, 20);
 
     public GUI() throws FileNotFoundException {
@@ -103,14 +108,18 @@ public class GUI extends JFrame implements ActionListener {
         //Panel for a new service entry
         JLabel newServiceLabel = new JLabel();
         newServiceLabel.setFont(labelFont);
-        newServiceLabel.setText("Enter a new service");
+        newServiceLabel.setText("                                                                                              Enter a new service");
         mainPanel.add(newServiceLabel);
         JPanel entryPanel = new JPanel(new FlowLayout());
-        serviceNameEntry.setText("Service Name");
+        serviceNameEntry.setPlaceholder("Service Name");
+        //serviceNameEntry.setText("Service Name");
         serviceNameEntry.setPreferredSize(new Dimension(120, 32));
         serviceNameEntry.setFont(systemFont);
         entryPanel.add(serviceNameEntry);
         passwordEntry.setFont(systemFont);
+        passwordEntry.addFocusListener(this);
+        passwordEntry.setPlaceholder(PASSWORD_PLACEHOLDER);
+        passwordEntry.setEchoChar((char) 0);
         entryPanel.add(passwordEntry);
         entryPanel.setFont(systemFont);
         submitButton.addActionListener(this);
@@ -125,7 +134,7 @@ public class GUI extends JFrame implements ActionListener {
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
         JLabel compromisedServiceLabel = new JLabel();
         compromisedServiceLabel.setFont(labelFont);
-        compromisedServiceLabel.setText("Flag a service that has had a data breach");
+        compromisedServiceLabel.setText("                                                                               Flag a service that has had a data breach");
         mainPanel.add(compromisedServiceLabel);
         //Add all services
         for (String[] aDataArray : dataArray) {
@@ -134,6 +143,7 @@ public class GUI extends JFrame implements ActionListener {
         compromisedServiceCombo.setFont(systemFont);
         serviceCompromisedPanel.add(compromisedServiceCombo);
         compromisedTimeField.setFont(systemFont);
+        compromisedTimeField.setPlaceholder("Enter UNIX Time");
         serviceCompromisedPanel.add(compromisedTimeField);
         serviceSubmitButton.addActionListener(this);
         serviceSubmitButton.setFont(buttonFont);
@@ -144,7 +154,7 @@ public class GUI extends JFrame implements ActionListener {
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         JLabel existingServiceLabel = new JLabel();
         existingServiceLabel.setFont(labelFont);
-        existingServiceLabel.setText("Update passwords for your services");
+        existingServiceLabel.setText("                                                                                  Update passwords for your services");
         mainPanel.add(existingServiceLabel);
         for (String[] aDataArray : dataArray) { //Thanks for the tidy up, @roberto
             //Check if the service string in the entry = the one entered by the user
@@ -152,9 +162,13 @@ public class GUI extends JFrame implements ActionListener {
             TextField serviceField = new TextField();
             serviceField.setPreferredSize(new Dimension(160, 32));
             serviceField.setFont(systemFont);
+            serviceField.setEditable(false);
             serviceField.setText(aDataArray[0]);
 
-            JPasswordField passwordUpdate = new JPasswordField(PASSWORD_COLUMNS);
+            CustomPasswordField passwordUpdate = new CustomPasswordField(PASSWORD_COLUMNS);
+            passwordUpdate.addFocusListener(this);
+            passwordUpdate.setPlaceholder(PASSWORD_PLACEHOLDER);
+            passwordUpdate.setEchoChar((char) 0);
             passwordUpdate.setPreferredSize(new Dimension(60, 32));
             passwordUpdate.setFont(systemFont);
             JButton updateButton = new JButton("Update");
@@ -191,6 +205,7 @@ public class GUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("Listener whoowhooowhooo");
         if (e.getSource() == submitButton) {
             String serviceName = serviceNameEntry.getText();
             String plainPassword = passwordEntry.getText();
@@ -259,7 +274,7 @@ public class GUI extends JFrame implements ActionListener {
             for (int i = 0; i < panelsList.size(); i++) {
                 if (e.getSource() == panelsList.get(i).getComponent(2)) {
                     //Get the password field of the appropriate element in the list
-                    JTextField passwordField = (JTextField)panelsList.get(i).getComponent(1);
+                    CustomPasswordField passwordField = (CustomPasswordField) panelsList.get(i).getComponent(1);
                     dataArray[i][2] = hashMyString(passwordField.getText()); //update password hash
                     String unixTime = Long.toString(Instant.now().getEpochSecond());
                     dataArray[i][1] = unixTime; //update time
@@ -274,6 +289,7 @@ public class GUI extends JFrame implements ActionListener {
                     passwordField.setText("");
                     break;
                 }
+
 
             }
             System.out.println("nahmate" + e.getSource());
@@ -330,6 +346,53 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         return services;
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        if (e.getSource() == passwordEntry) {
+            passwordEntry.setEchoChar('*');
+            passwordEntry.setFont(systemFont);
+        }
+        else {
+            for (int i = 0; i < panelsList.size(); i++) {
+                //If its one of the password feels (needed for hiding and unhiding text
+                if (e.getSource() == panelsList.get(i).getComponent(1)) {
+                    CustomPasswordField passwordField = (CustomPasswordField) panelsList.get(i).getComponent(1);
+                    passwordField.setEchoChar('*');
+                    passwordField.setFont(systemFont);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        if (e.getSource() == passwordEntry) {
+            if (passwordEntry.getText().length() == 0) {
+                passwordEntry.setEchoChar((char) 0);
+            } else {
+                passwordEntry.setEchoChar('*');
+            }
+            passwordEntry.setFont(systemFont);
+        }
+        else {
+            for (int i = 0; i < panelsList.size(); i++) {
+                //If its one of the password feels (needed for hiding and unhiding text
+                if (e.getSource() == panelsList.get(i).getComponent(1)) {
+                    CustomPasswordField passwordField = (CustomPasswordField) panelsList.get(i).getComponent(1);
+                    if (passwordField.getText().length() == 0) {
+                        passwordField.setEchoChar((char) 0);
+                    } else {
+                        passwordField.setEchoChar('*');
+                    }
+                    passwordField.setFont(systemFont);
+                    break;
+                }
+            }
+        }
     }
 }
 
