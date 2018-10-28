@@ -1,6 +1,4 @@
 
-import com.sun.jna.platform.win32.WinDef;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -38,6 +36,8 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
     private JComboBox<String> compromisedServiceCombo = new JComboBox<String>();
     private CustomTextField compromisedTimeField = new CustomTextField(11);
     private JButton serviceSubmitButton = new JButton("Check");
+
+    private JButton checkDuplicateServiceButton = new JButton("Check for duplicated services");
 
     private JPanel servicesPanel = new JPanel();
     private ArrayList<JPanel> panelsList = new ArrayList<JPanel>();
@@ -150,6 +150,9 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         serviceSubmitButton.addActionListener(this);
         serviceSubmitButton.setFont(buttonFont);
         serviceCompromisedPanel.add(serviceSubmitButton);
+        checkDuplicateServiceButton.addActionListener(this);
+        checkDuplicateServiceButton.setFont(buttonFont);
+        serviceCompromisedPanel.add(checkDuplicateServiceButton);
         mainPanel.add(serviceCompromisedPanel);
 
         //Panel for all services existing within data
@@ -311,6 +314,23 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                     setServicesTextColours();
                     break;
                 }
+            }
+        }
+        else if (e.getSource() == checkDuplicateServiceButton){
+            User user = new User();
+            try {
+                ArrayList<String []> duplicatesArrayList = user.searchForPairs();
+                System.out.println(duplicatesArrayList);
+                StringBuilder outputString = new StringBuilder("These groups of services share a common password. You should change these to protect yourself from attacks:\n \n");
+                for (int i = 0; i < duplicatesArrayList.size(); i++) {
+                    for (int j = 0; j < duplicatesArrayList.get(i).length; j++) {
+                        outputString.append(duplicatesArrayList.get(i)[j] + ", ");
+                    }
+                    outputString.append("\n");
+                }
+                JOptionPane.showMessageDialog(null, outputString.toString());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
             }
         }
         else {
