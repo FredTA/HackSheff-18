@@ -133,14 +133,15 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         //Panel for entering a compromised service
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
         JLabel compromisedServiceLabel = new JLabel();
+        mainPanel.add(compromisedServiceLabel);
         compromisedServiceLabel.setFont(labelFont);
         compromisedServiceLabel.setText("                                                                               Flag a service that has had a data breach");
-        mainPanel.add(compromisedServiceLabel);
         //Add all services
         for (String[] aDataArray : dataArray) {
             compromisedServiceCombo.addItem(aDataArray[0]);
         }
         compromisedServiceCombo.setFont(systemFont);
+        compromisedServiceCombo.setLightWeightPopupEnabled(false); // use heavyweight component
         serviceCompromisedPanel.add(compromisedServiceCombo);
         compromisedTimeField.setFont(systemFont);
         compromisedTimeField.setPlaceholder("Enter UNIX Time");
