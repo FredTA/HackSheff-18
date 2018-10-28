@@ -27,6 +27,7 @@ public class GUI extends JFrame implements ActionListener {
     private JTextField serviceNameEntry = new JTextField(20);
     private JPasswordField passwordEntry = new JPasswordField(20);
     private JButton submitButton = new JButton("Add");
+    private JLabel serviceEnteredLabel = new JLabel();
 
     private JComboBox<String> compromisedServiceCombo = new JComboBox<String>();
     private JTextField compromisedTimeField = new JTextField(20);
@@ -95,16 +96,24 @@ public class GUI extends JFrame implements ActionListener {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         //Panel for a new service entry
+        JLabel newServiceLabel = new JLabel();
+        newServiceLabel.setText("Enter a new service");
+        mainPanel.add(newServiceLabel);
         JPanel entryPanel = new JPanel(new FlowLayout());
         serviceNameEntry.setText("Service Name");
         entryPanel.add(serviceNameEntry);
         entryPanel.add(passwordEntry);
         submitButton.addActionListener(this);
         entryPanel.add(submitButton);
+        serviceEnteredLabel.setVisible(false);
+        entryPanel.add(serviceEnteredLabel);
         mainPanel.add(entryPanel);
 
         //Panel for entering a compromised service
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
+        JLabel compromisedServiceLabel = new JLabel();
+        compromisedServiceLabel.setText("Flag a service that has had a data breach");
+        mainPanel.add(compromisedServiceLabel);
         //Add all services
         for (String[] aDataArray : dataArray) {
             compromisedServiceCombo.addItem(aDataArray[0]);
@@ -115,8 +124,12 @@ public class GUI extends JFrame implements ActionListener {
         serviceCompromisedPanel.add(serviceSubmitButton);
         mainPanel.add(serviceCompromisedPanel);
 
+        //Panel for all services existing within data
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
-        for (String[] aDataArray : dataArray) {
+        JLabel existingServiceLabel = new JLabel();
+        existingServiceLabel.setText("Update passwords for your services");
+        mainPanel.add(existingServiceLabel);
+        for (String[] aDataArray : dataArray) { //Thanks for the tidy up, @roberto
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
             TextField serviceField = new TextField();
@@ -124,10 +137,13 @@ public class GUI extends JFrame implements ActionListener {
             JPasswordField passwordUpdate = new JPasswordField(20);
             JButton updateButton = new JButton("Update");
             updateButton.addActionListener(this);
+            JLabel serviceUpdateLabel = new JLabel();
+            serviceUpdateLabel.setVisible(false);
 
             servicePanel.add(serviceField);
             servicePanel.add(passwordUpdate);
             servicePanel.add(updateButton);
+            servicePanel.add(serviceUpdateLabel);
 
             panelsList.add(servicePanel);
             servicesPanel.add(servicePanel);
@@ -182,12 +198,16 @@ public class GUI extends JFrame implements ActionListener {
                 //Refresh the combo box
                 compromisedServiceCombo.addItem(serviceName);
 
+                serviceEnteredLabel.setVisible(true);
+                serviceEnteredLabel.setText(serviceName + " entered!");
                 //contentPane.removeAll();
                 //setupListScreen();
                 revalidate();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
+            serviceNameEntry.setText("Service name");
+            passwordEntry.setText("");
         }
         else if (e.getSource() == serviceSubmitButton) {
             String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
@@ -220,7 +240,15 @@ public class GUI extends JFrame implements ActionListener {
                     dataArray[i][2] = hashMyString(passwordField.getText()); //update password hash
                     String unixTime = Long.toString(Instant.now().getEpochSecond());
                     dataArray[i][1] = unixTime; //update time
-                    datahandler.updateFile(dataArray);
+                    datahandler.updateFile(dataArray); //Update the file with new deets
+
+                    //Display correct labels
+                    JLabel label = (JLabel)panelsList.get(i).getComponent(3);
+                    label.setVisible(true);
+                    label.setText("Password updated!");
+
+                    //Clear password field
+                    passwordField.setText("");
                     break;
                 }
 
