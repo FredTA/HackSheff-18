@@ -217,7 +217,9 @@ public class GUI extends JFrame implements ActionListener {
                 if (e.getSource() == panelsList.get(i).getComponent(2)) {
                     //Get the password field of the appropriate element in the list
                     JTextField passwordField = (JTextField)panelsList.get(i).getComponent(1);
-                    dataArray[i][2] = hashMyString(passwordField.getText());
+                    dataArray[i][2] = hashMyString(passwordField.getText()); //update password hash
+                    String unixTime = Long.toString(Instant.now().getEpochSecond());
+                    dataArray[i][1] = unixTime; //update time
                     datahandler.updateFile(dataArray);
                     break;
                 }
