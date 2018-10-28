@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,8 +24,8 @@ public class GUI extends JFrame implements ActionListener {
 
     //The size of screen of the device the program is running on
     private Dimension screenSize;
-    private JTextField serviceNameField = new JTextField(20);
-    private JTextField passwordField = new JTextField(20);
+    //private JTextField serviceNameField = new JTextField(20);
+    //private JTextField passwordField = new JTextField(20);
 
     private JTextField serviceNameEntry = new JTextField(20);
     private JPasswordField passwordEntry = new JPasswordField(20);
@@ -34,7 +35,9 @@ public class GUI extends JFrame implements ActionListener {
     private JTextField compromisedTimeField = new JTextField(20);
     private JButton serviceSubmitButton = new JButton("Check");
 
-    private ArrayList<JPanel> panelsList;
+    private JPanel servicesPanel = new JPanel();
+    private ArrayList<JPanel> panelsList = new ArrayList<JPanel>();
+
     public GUI() throws FileNotFoundException {
         super("HashSheffield");
 
@@ -111,11 +114,10 @@ public class GUI extends JFrame implements ActionListener {
         }
         serviceCompromisedPanel.add(compromisedServiceCombo);
         serviceCompromisedPanel.add(compromisedTimeField);
+        serviceSubmitButton.addActionListener(this);
         serviceCompromisedPanel.add(serviceSubmitButton);
         mainPanel.add(serviceCompromisedPanel);
 
-        JPanel servicesPanel = new JPanel();
-        panelsList = new ArrayList<JPanel>();
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         for (int entry = 0; entry < dataArray.length; entry++) {
             //Check if the service string in the entry = the one entered by the user
@@ -154,33 +156,89 @@ public class GUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == submitButton) {
             String serviceName = serviceNameEntry.getText();
-            String plainPassword = serviceNameEntry.getText();
+            String plainPassword = passwordEntry.getText();
             String unixTime = Long.toString(Instant.now().getEpochSecond());
+            System.out.println("Woweee you just entered a new service, " + serviceName + " conFUCKINGgratis");
+            String hashText = "";
 
-            MessageDigest digest = null;
             try {
-                digest = MessageDigest.getInstance("SHA-256");
-            } catch (NoSuchAlgorithmException e1) {
-                e1.printStackTrace();
+                // Static getInstance method is called with hashing SHA
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+                // digest() method called
+                // to calculate message digest of an input
+                // and return array of byte
+                byte[] messageDigest = md.digest(plainPassword.getBytes());
+
+                // Convert byte array into signum representation
+                BigInteger no = new BigInteger(1, messageDigest);
+
+                // Convert message digest into hex value
+                hashText = no.toString(16);
+
+                while (hashText.length() < 32) {
+                    hashText = "0" + hashText;
+                }
+
             }
-            byte[] hash = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
 
-            //String[] dataEntry = new String[] {serviceName,  unixTime, hash.toString(),};
+            // For specifying wrong message digest algorithms
+            catch (NoSuchAlgorithmException e1) {
+                System.out.println("Exception thrown"
+                        + " for incorrect algorithm: " + e1);
 
-            String dataEntry =  serviceName + ";" + unixTime + ";" + hash.toString();
+            }
+
+            String dataEntry =  serviceName + ";" + unixTime + ";" + hashText;
 
             try {
+                //Refresh the data array as we have now edited the storage file
                 datahandler.createNewPass(dataEntry);
+                dataArray = datahandler.readData();
+
+                //Add the new service to the list on the UI
+                JPanel servicePanel = new JPanel(new FlowLayout());
+                TextField serviceField = new TextField();
+                serviceField.setText(serviceName);
+                JPasswordField passwordUpdate = new JPasswordField(20);
+                JButton updateButton = new JButton("Update");
+
+                servicePanel.add(serviceField);
+                servicePanel.add(passwordUpdate);
+                servicePanel.add(updateButton);
+
+                panelsList.add(servicePanel);
+                servicesPanel.add(servicePanel);
+
+                //Refresh the combo box
+                compromisedServiceCombo.addItem(serviceName);
+
+                //contentPane.removeAll();
+                //setupListScreen();
+                revalidate();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }
         else if (e.getSource() == serviceSubmitButton) {
             String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
+            System.out.println();
+            System.out.println("Looking for hashes matching that of " + compromisedService);
             for (int entry = 0; entry < dataArray.length; entry++) {
                 //Check if the service string in the entry = the one entered by the user
-                if ((dataArray[entry][0] == compromisedService)) {
-                    System.out.println("");
+                if ((dataArray[entry][0] == compromisedService))
+                {
+                    System.out.println("Hash value: " + dataArray[entry][2]);
+                    //Sry for the leng line :'( cba to fix
+                    int timeOfBreach = Integer.parseInt(compromisedTimeField.getText());
+                    ArrayList<String> matchingServiceList = getServicesWithHashAfterTime(dataArray[entry][2],timeOfBreach);
+                    System.out.println("Accounts that are at risk: " );
+                    String message = ("You should change your password for the following services\n");
+                    for (int i = 0; i < matchingServiceList.size(); i++) {
+                        System.out.println(matchingServiceList.get(i));
+                        message += matchingServiceList.get(i) + "\n";
+                    }
+                    JOptionPane.showMessageDialog(null, message);
                     break;
                 }
             }
@@ -193,13 +251,15 @@ public class GUI extends JFrame implements ActionListener {
         //System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
     }
 
-    private ArrayList<String> getServicesWithHash (String hash) {
+    private ArrayList<String> getServicesWithHashAfterTime (String hash, int time) {
         ArrayList<String> services = new ArrayList<>();
 
         for (int entry = 0; entry < dataArray.length; entry++) {
-            //Check if the hash in the entry = the hash parsed
-            if (dataArray[entry][2] == hash) {
+            System.out.println(entry + ": " + dataArray[entry][2]);
+            //Check if the hash in the entry = the hash parsed and the time passed in is greater than the time updated
+            if (dataArray[entry][2].equals(hash) && Integer.parseInt(dataArray[entry][1]) < time) {
                 //Add to the arraylist the service name
+                System.out.println(dataArray[entry][0] + " matches!");
                 services.add(dataArray[entry][0]);
             }
         }

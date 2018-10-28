@@ -26,6 +26,7 @@ public class Data {
             while (scanner.hasNextLine()) {
                 list.add(scanner.next());
             }
+            scanner.close();
             return convertList(list);
         }
         catch (FileNotFoundException e){
