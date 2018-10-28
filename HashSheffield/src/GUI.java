@@ -25,7 +25,7 @@ public class GUI extends JFrame implements ActionListener {
     //private JTextField serviceNameField = new JTextField(20);
     //private JTextField passwordField = new JTextField(20);
 
-    private JTextField serviceNameEntry = new JTextField(10);
+    private JTextField serviceNameEntry = new JTextField(8);
     private JPasswordField passwordEntry = new JPasswordField(PASSWORD_COLUMNS);
     private JButton submitButton = new JButton("Add");
     private JLabel serviceEnteredLabel = new JLabel();
@@ -36,6 +36,10 @@ public class GUI extends JFrame implements ActionListener {
 
     private JPanel servicesPanel = new JPanel();
     private ArrayList<JPanel> panelsList = new ArrayList<JPanel>();
+
+    Font systemFont = new Font("Serif", Font.BOLD, 24);
+    Font buttonFont = new Font("Serif", Font.BOLD, 16);
+    Font labelFont = new Font("Serif", Font.CENTER_BASELINE, 20);
 
     public GUI() throws FileNotFoundException {
         super("HashSheffield");
@@ -98,49 +102,64 @@ public class GUI extends JFrame implements ActionListener {
 
         //Panel for a new service entry
         JLabel newServiceLabel = new JLabel();
+        newServiceLabel.setFont(labelFont);
         newServiceLabel.setText("Enter a new service");
         mainPanel.add(newServiceLabel);
         JPanel entryPanel = new JPanel(new FlowLayout());
         serviceNameEntry.setText("Service Name");
+        serviceNameEntry.setPreferredSize(new Dimension(120, 32));
+        serviceNameEntry.setFont(systemFont);
         entryPanel.add(serviceNameEntry);
+        passwordEntry.setFont(systemFont);
         entryPanel.add(passwordEntry);
+        entryPanel.setFont(systemFont);
         submitButton.addActionListener(this);
+        submitButton.setFont(buttonFont);
         entryPanel.add(submitButton);
         serviceEnteredLabel.setVisible(false);
+        serviceEnteredLabel.setFont(labelFont);
         entryPanel.add(serviceEnteredLabel);
         mainPanel.add(entryPanel);
 
         //Panel for entering a compromised service
         JPanel serviceCompromisedPanel = new JPanel(new FlowLayout());
         JLabel compromisedServiceLabel = new JLabel();
+        compromisedServiceLabel.setFont(labelFont);
         compromisedServiceLabel.setText("Flag a service that has had a data breach");
         mainPanel.add(compromisedServiceLabel);
         //Add all services
         for (String[] aDataArray : dataArray) {
             compromisedServiceCombo.addItem(aDataArray[0]);
         }
+        compromisedServiceCombo.setFont(systemFont);
         serviceCompromisedPanel.add(compromisedServiceCombo);
+        compromisedTimeField.setFont(systemFont);
         serviceCompromisedPanel.add(compromisedTimeField);
         serviceSubmitButton.addActionListener(this);
+        serviceSubmitButton.setFont(buttonFont);
         serviceCompromisedPanel.add(serviceSubmitButton);
         mainPanel.add(serviceCompromisedPanel);
 
         //Panel for all services existing within data
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         JLabel existingServiceLabel = new JLabel();
+        existingServiceLabel.setFont(labelFont);
         existingServiceLabel.setText("Update passwords for your services");
         mainPanel.add(existingServiceLabel);
         for (String[] aDataArray : dataArray) { //Thanks for the tidy up, @roberto
             //Check if the service string in the entry = the one entered by the user
             JPanel servicePanel = new JPanel(new FlowLayout());
             TextField serviceField = new TextField();
-            serviceField.setPreferredSize(new Dimension(120, 20));
+            serviceField.setPreferredSize(new Dimension(160, 32));
+            serviceField.setFont(systemFont);
             serviceField.setText(aDataArray[0]);
 
             JPasswordField passwordUpdate = new JPasswordField(PASSWORD_COLUMNS);
-            passwordUpdate.setPreferredSize(new Dimension(60, 20));
+            passwordUpdate.setPreferredSize(new Dimension(60, 32));
+            passwordUpdate.setFont(systemFont);
             JButton updateButton = new JButton("Update");
             updateButton.addActionListener(this);
+            updateButton.setFont(buttonFont);
             JLabel serviceUpdateLabel = new JLabel();
             serviceUpdateLabel.setVisible(false);
 
