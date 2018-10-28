@@ -109,7 +109,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         //Panel for a new service entry
         JLabel newServiceLabel = new JLabel();
         newServiceLabel.setFont(labelFont);
-        newServiceLabel.setText("                        Enter a new service");
+        newServiceLabel.setText("                  Enter a new service");
         mainPanel.add(newServiceLabel);
         JPanel entryPanel = new JPanel(new FlowLayout());
         serviceNameEntry.setPlaceholder("Service Name");
@@ -136,7 +136,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         JLabel compromisedServiceLabel = new JLabel();
         mainPanel.add(compromisedServiceLabel);
         compromisedServiceLabel.setFont(labelFont);
-        compromisedServiceLabel.setText("    Flag a service that has had a data breach");
+        compromisedServiceLabel.setText("Flag a service that has had a data breach");
         //Add all services
         for (String[] aDataArray : dataArray) {
             compromisedServiceCombo.addItem(aDataArray[0]);
@@ -156,7 +156,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         servicesPanel.setLayout(new BoxLayout(servicesPanel, BoxLayout.Y_AXIS));
         JLabel existingServiceLabel = new JLabel();
         existingServiceLabel.setFont(labelFont);
-        existingServiceLabel.setText("          Update passwords for your services");
+        existingServiceLabel.setText("   Update passwords for your services");
         mainPanel.add(existingServiceLabel);
         for (String[] aDataArray : dataArray) { //Thanks for the tidy up, @roberto
             //Check if the service string in the entry = the one entered by the user
