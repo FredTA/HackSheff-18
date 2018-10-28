@@ -45,6 +45,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
     Font systemFont = new Font("Serif", Font.BOLD, 24);
     Font buttonFont = new Font("Serif", Font.BOLD, 18);
     Font labelFont = new Font("Serif", Font.CENTER_BASELINE, 20);
+    Font alertLabelFont = new Font("Serif", Font.CENTER_BASELINE, 16);
 
     public GUI() throws FileNotFoundException {
         super("HashSheffield");
@@ -126,7 +127,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         submitButton.setFont(buttonFont);
         entryPanel.add(submitButton);
         serviceEnteredLabel.setVisible(false);
-        serviceEnteredLabel.setFont(labelFont);
+        serviceEnteredLabel.setFont(alertLabelFont);
         entryPanel.add(serviceEnteredLabel);
         mainPanel.add(entryPanel);
 
@@ -178,6 +179,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
             updateButton.setFont(buttonFont);
             JLabel serviceUpdateLabel = new JLabel();
             serviceUpdateLabel.setVisible(false);
+            serviceUpdateLabel.setFont(alertLabelFont);
 
             servicePanel.add(serviceField);
             servicePanel.add(passwordUpdate);
@@ -222,61 +224,71 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Listener whoowhooowhooo");
+        serviceEnteredLabel.setVisible(true);
         if (e.getSource() == submitButton) {
             String serviceName = serviceNameEntry.getText();
-            String plainPassword = passwordEntry.getText();
-            String unixTime = Long.toString(Instant.now().getEpochSecond());
-            System.out.println("Woweee you just entered a new service, " + serviceName + " conFUCKINGgratis");
+            if (!isServicePresent(serviceName)) {
+                String plainPassword = passwordEntry.getText();
+                String unixTime = Long.toString(Instant.now().getEpochSecond());
+                System.out.println("Woweee you just entered a new service, " + serviceName + " congratis");
 
-            String dataEntry =  serviceName + ";" + unixTime + ";" + hashMyString(plainPassword);
+                String dataEntry =  serviceName + ";" + unixTime + ";" + hashMyString(plainPassword);
 
-            try {
-                //Refresh the data array as we have now edited the storage file
-                datahandler.createNewPass(dataEntry);
-                dataArray = datahandler.readData();
+                try {
+                    //Refresh the data array as we have now edited the storage file
+                    datahandler.createNewPass(dataEntry);
+                    dataArray = datahandler.readData();
 
-                //Add the new service to the list on the UI
-                JPanel servicePanel = new JPanel(new FlowLayout());
-                TextField serviceField = new TextField();
-                serviceField.setPreferredSize(new Dimension(160, 32));
-                serviceField.setFont(systemFont);
-                serviceField.setEditable(false);
-                serviceField.setText(serviceName);
+                    //Add the new service to the list on the UI
+                    JPanel servicePanel = new JPanel(new FlowLayout());
+                    TextField serviceField = new TextField();
+                    serviceField.setPreferredSize(new Dimension(160, 32));
+                    serviceField.setFont(systemFont);
+                    serviceField.setEditable(false);
+                    serviceField.setText(serviceName);
 
-                //here
-                CustomPasswordField passwordUpdate = new CustomPasswordField(PASSWORD_COLUMNS);
-                passwordUpdate.addFocusListener(this);
-                passwordUpdate.setPlaceholder(PASSWORD_PLACEHOLDER);
-                passwordUpdate.setEchoChar((char) 0);
-                passwordUpdate.setPreferredSize(new Dimension(60, 32));
-                passwordUpdate.setFont(systemFont);
-                JButton updateButton = new JButton("Update");
-                updateButton.addActionListener(this);
-                updateButton.setFont(buttonFont);
-                JLabel serviceUpdateLabel = new JLabel();
-                serviceUpdateLabel.setVisible(false);
-
-                servicePanel.add(serviceField);
-                servicePanel.add(passwordUpdate);
-                servicePanel.add(updateButton);
-                servicePanel.add(serviceUpdateLabel);
-
-                panelsList.add(servicePanel);
-                servicesPanel.add(servicePanel);
                     //here
-                //Refresh the combo box
-                compromisedServiceCombo.addItem(serviceName);
+                    CustomPasswordField passwordUpdate = new CustomPasswordField(PASSWORD_COLUMNS);
+                    passwordUpdate.addFocusListener(this);
+                    passwordUpdate.setPlaceholder(PASSWORD_PLACEHOLDER);
+                    passwordUpdate.setEchoChar((char) 0);
+                    passwordUpdate.setPreferredSize(new Dimension(60, 32));
+                    passwordUpdate.setFont(systemFont);
+                    JButton updateButton = new JButton("Update");
+                    updateButton.addActionListener(this);
+                    updateButton.setFont(buttonFont);
+                    JLabel serviceUpdateLabel = new JLabel();
+                    serviceUpdateLabel.setFont(alertLabelFont);
+                    serviceUpdateLabel.setVisible(false);
 
-                serviceEnteredLabel.setVisible(true);
+                    servicePanel.add(serviceField);
+                    servicePanel.add(passwordUpdate);
+                    servicePanel.add(updateButton);
+                    servicePanel.add(serviceUpdateLabel);
+
+                    panelsList.add(servicePanel);
+                    servicesPanel.add(servicePanel);
+                    //here
+                    //Refresh the combo box
+                    compromisedServiceCombo.addItem(serviceName);
+
+                    serviceUpdateLabel.setFont(alertLabelFont);
+                    //contentPane.removeAll();
+                    //setupListScreen();
+                    revalidate();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                serviceNameEntry.setText("Service name");
+                passwordEntry.setText("");
+                serviceEnteredLabel.setForeground(Color.GREEN);
                 serviceEnteredLabel.setText(serviceName + " entered!");
-                //contentPane.removeAll();
-                //setupListScreen();
-                revalidate();
-            } catch (IOException e1) {
-                e1.printStackTrace();
             }
-            serviceNameEntry.setText("Service name");
-            passwordEntry.setText("");
+            else {
+                serviceEnteredLabel.setForeground(Color.RED);
+                serviceEnteredLabel.setText(serviceName + " already exists");
+            }
+
         }
         else if (e.getSource() == serviceSubmitButton) {
             String compromisedService = compromisedServiceCombo.getSelectedItem().toString();
@@ -314,22 +326,26 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
 
                     String newHash = hashMyString(passwordField.getText());
                     //Check if the password is different to what is already stored
-                    if (dataArray[i][2] != newHash) {
+                    if (!dataArray[i][2].equals(newHash)) {
                         dataArray[i][2] = newHash; //update password hash
                         String unixTime = Long.toString(Instant.now().getEpochSecond());
                         dataArray[i][1] = unixTime; //update time
                         dataArray[i][3] = "0"; //entry no longer flagged as compromised
                         datahandler.updateFile(dataArray); //Update the file with new deets
+                        label.setForeground(Color.GREEN);
                         label.setText("Password updated!");
                         setServicesTextColours(); //Reset text colours
                     }
                     else {
                         label.setText("No change!");
+                        label.setForeground(Color.RED);
                     }
 
 
                     //Clear password field
                     passwordField.setText("");
+                    passwordField.setPlaceholder(PASSWORD_PLACEHOLDER);
+                    passwordField.setEchoChar((char) 0);
                     break;
                 }
 
@@ -340,6 +356,16 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
 
 
         //System.out.println("Entry: " + serviceName + ", " + hash.toString() + ", " + unixTimestamp);
+    }
+
+    private Boolean isServicePresent(String service) {
+        for (int i = 0; i < dataArray.length; i++) {
+            if (dataArray[i][0].equals(service)) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     private String hashMyString(String stringToHash) {
