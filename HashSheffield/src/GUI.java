@@ -307,15 +307,26 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                 if (e.getSource() == panelsList.get(i).getComponent(2)) {
                     //Get the password field of the appropriate element in the list
                     CustomPasswordField passwordField = (CustomPasswordField) panelsList.get(i).getComponent(1);
-                    dataArray[i][2] = hashMyString(passwordField.getText()); //update password hash
-                    String unixTime = Long.toString(Instant.now().getEpochSecond());
-                    dataArray[i][1] = unixTime; //update time
-                    datahandler.updateFile(dataArray); //Update the file with new deets
 
                     //Display correct labels
                     JLabel label = (JLabel)panelsList.get(i).getComponent(3);
                     label.setVisible(true);
-                    label.setText("Password updated!");
+
+                    String newHash = hashMyString(passwordField.getText());
+                    //Check if the password is different to what is already stored
+                    if (dataArray[i][2] != newHash) {
+                        dataArray[i][2] = newHash; //update password hash
+                        String unixTime = Long.toString(Instant.now().getEpochSecond());
+                        dataArray[i][1] = unixTime; //update time
+                        dataArray[i][3] = "0"; //entry no longer flagged as compromised
+                        datahandler.updateFile(dataArray); //Update the file with new deets
+                        label.setText("Password updated!");
+                        setServicesTextColours(); //Reset text colours
+                    }
+                    else {
+                        label.setText("No change!");
+                    }
+
 
                     //Clear password field
                     passwordField.setText("");
