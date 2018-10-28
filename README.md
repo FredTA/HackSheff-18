@@ -1,3 +1,3 @@
 # HackSheff-18
 
-REEEEEEEEEEEEEEEEEEADME
+Please see HackSheff Submission
