@@ -51,14 +51,8 @@ public class HttpURLConnectionExample {
 		
 		System.out.println(n + "/n " + a); 
 
-<<<<<<< HEAD
 		strNew1 = strNew1.replaceFirst("Domain","");
 		
 		
-=======
-		//Jesus Cian this line is so fecking long, pls remove!!!!!!!!!!!1111!!11!!1
-		//print result
-		//System.out.println(response.toString());
->>>>>>> 879b92d38af84cce2835ce9943992e337745734b
 	}}
 
