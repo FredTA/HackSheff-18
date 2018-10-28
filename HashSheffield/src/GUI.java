@@ -191,9 +191,23 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         //servicesScrollPane.getVerticalScrollBar().setSize(50,50);
         mainPanel.add(servicesScrollPane);
 
+        setServicesTextColours();
+
         contentPane.add(mainPanel);
         JPanel compromisedServicePanel = new JPanel();
 
+    }
+
+    private void setServicesTextColours() {
+        for (int i = 0; i < panelsList.size(); i++) {
+            //If the entry has been flagged as
+            if (dataArray[i][3].equals("1")) {
+                panelsList.get(i).getComponent(0).setBackground(Color.RED);
+            }
+            else {
+                panelsList.get(i).getComponent(0).setBackground(Color.WHITE);
+            }
+        }
     }
 
     //Resizes the window according to screen size and centres the window
@@ -282,6 +296,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                         message.append(aMatchingServiceList).append("\n");
                     }
                     JOptionPane.showMessageDialog(null, message.toString());
+                    setServicesTextColours();
                     break;
                 }
             }
@@ -359,6 +374,8 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                 //Add to the arraylist the service name
                 System.out.println(dataArray[entry][0] + " matches!");
                 services.add(dataArray[entry][0]);
+                dataArray[entry][3] = "1"; //Flag entry as compromised
+                datahandler.updateFile(dataArray); //Update the file with new flags
             }
         }
 

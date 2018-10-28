@@ -23,7 +23,7 @@ public class Data {
     public void updateFile(String[][] dataArray) {
         try{
             FileWriter writer = new FileWriter(pathToFile, false);
-            writer.write(dataArray[0][0] + ";" + dataArray[0][1] + ";" + dataArray[0][2]);
+            writer.write(dataArray[0][0] + ";" + dataArray[0][1] + ";" + dataArray[0][2] + ";" + dataArray[0][3]);
             for (int i = 1; i < dataArray.length ; i++) {
                 writer.write("\n" + dataArray[i][0] + ";" + dataArray[i][1] + ";" + dataArray[i][2] + ";" + dataArray[i][3]);
             }
