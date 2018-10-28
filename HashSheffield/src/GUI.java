@@ -232,7 +232,7 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
                 String unixTime = Long.toString(Instant.now().getEpochSecond());
                 System.out.println("Woweee you just entered a new service, " + serviceName + " congratis");
 
-                String dataEntry =  serviceName + ";" + unixTime + ";" + hashMyString(plainPassword);
+                String dataEntry =  serviceName + ";" + unixTime + ";" + hashMyString(plainPassword) + ";0";
 
                 try {
                     //Refresh the data array as we have now edited the storage file
@@ -407,7 +407,9 @@ public class GUI extends JFrame implements ActionListener, FocusListener {
         for (int entry = 0; entry < dataArray.length; entry++) {
             System.out.println(entry + ": " + dataArray[entry][2]);
             //Check if the hash in the entry = the hash parsed and the time passed in is greater than the time updated
-            if (dataArray[entry][2].equals(hash) && Integer.parseInt(dataArray[entry][1]) < time) {
+            //System.out.print("Searching" + dataArray[entry][2] + ", " + hash + ":  ");
+            //System.out.println(Integer.parseInt(dataArray[entry][1] + ", " + time));
+            if (dataArray[entry][2].equals(hash) && Integer.valueOf(dataArray[entry][1]) < time) {
                 //Add to the arraylist the service name
                 System.out.println(dataArray[entry][0] + " matches!");
                 services.add(dataArray[entry][0]);
