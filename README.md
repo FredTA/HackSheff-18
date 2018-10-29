@@ -16,7 +16,7 @@ If one of these services loses your data, you can select that service along with
 
 You can then update each password, and it'll be removed from the list of passwords flagged as unsafe.
 
-<h4> TRY THIS! <h4>
+<h4> TRY THIS! </h4>
 
 Add your own services
 Select a service that has been breached, with the current epoch time (1540727513 at the time of writing) and see which services have been flagged
